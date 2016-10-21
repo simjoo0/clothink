@@ -1,6 +1,7 @@
 package clothing.plus.think.clothink;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class ListViewAdapter extends BaseExpandableListAdapter {
         this.context=context;
         this.arrayGroup=arrayGroup;
         this.arrayChild=arrayChild;
+
     }
 
     @Override
