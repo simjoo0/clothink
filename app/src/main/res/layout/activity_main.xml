@@ -31,7 +31,7 @@
             android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -40,6 +40,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
                 <ImageView
+                    android:id="@+id/weatherIconImage"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/sunnycloud"/>
@@ -52,10 +53,14 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="20dp"
+                android:layout_height="match_parent"></LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -66,12 +71,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textSize="65sp"
+                        android:textSize="60sp"
                         android:text="18"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textSize="65sp"
+                        android:textColor="#FFCD12"
+                        android:textSize="60sp"
                         android:text="℃"/>
                 </LinearLayout>
 
@@ -90,7 +96,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:textSize="15sp"
+                            android:textSize="10sp"
+                            android:textColor="#0940AE"
+                            android:textStyle="bold"
                             android:text="최저기온"/>
 
                         <LinearLayout
@@ -102,15 +110,20 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="30sp"
+                                android:textSize="25sp"
                                 android:text="10"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="30sp"
+                                android:textSize="25sp"
                                 android:text="℃"/>
                         </LinearLayout>
                     </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="35sp"
+                        android:text="/"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -122,7 +135,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_horizontal"
-                            android:textSize="15sp"
+                            android:textSize="10sp"
+                            android:textColor="#DC1212"
+                            android:textStyle="bold"
                             android:text="최고기온"/>
 
                         <LinearLayout
@@ -134,12 +149,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="30sp"
+                                android:textSize="25sp"
                                 android:text="10"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="30sp"
+                                android:textSize="25sp"
                                 android:text="℃"/>
                         </LinearLayout>
                     </LinearLayout>
@@ -148,73 +163,171 @@
 
         </LinearLayout>
 
-        <TabHost
+        <LinearLayout
             android:layout_marginTop="20dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/tabhost"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/closetBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="#FFCD12"
+                    android:src="@drawable/closetbtnfocus"
+                    android:scaleType="fitCenter"/>
+                <ImageButton
+                    android:id="@+id/washerBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF"
+                    android:src="@drawable/washerbtn"
+                    android:scaleType="fitCenter"/>
+                <ImageButton
+                    android:id="@+id/settingBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:background="#FFFFFF"
+                    android:src="@drawable/settingbtn"
+                    android:scaleType="fitCenter"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/fragmentLayout"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="match_parent"
-                    android:tabStripEnabled="false"
-                    android:layout_height="30dp" />
-
-                <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:id="@+id/tab1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#FFFFFF"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="옷장"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tab2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#FFFFFF"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="세탁"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tab3"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#FFFFFF"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="설정"/>
-
-                    </LinearLayout>
-                </FrameLayout>
             </LinearLayout>
-        </TabHost>
+
+        </LinearLayout>
+
+
+
+        <!--<TabHost-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:id="@+id/tabhost"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
+
+                <!--<TabWidget-->
+                    <!--android:id="@android:id/tabs"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:tabStripEnabled="false"-->
+                    <!--android:layout_height="30dp" />-->
+
+                <!--<FrameLayout-->
+                    <!--android:id="@android:id/tabcontent"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent">-->
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/tab1"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="#FFFFFF"-->
+                        <!--android:orientation="vertical">-->
+                        <!--&lt;!&ndash;<fragment&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:id="@+id/fragment_place"&ndash;&gt;-->
+                            <!--&lt;!&ndash;android:name="clothing.plus.think.clothink.ClosetActivity"&ndash;&gt;-->
+                            <!--&lt;!&ndash;tools:layout="@layout/activity_main"/>&ndash;&gt;-->
+
+                        <!--<LinearLayout-->
+                            <!--android:id="@+id/tab1Fragment"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:orientation="vertical">-->
+
+                        <!--</LinearLayout>-->
+
+                    <!--</LinearLayout>-->
+
+
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/tab2"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="#FFFFFF"-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:gravity="center_vertical">-->
+
+                        <!--<LinearLayout-->
+                            <!--android:id="@+id/laundryWaitLinear"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:orientation="vertical"-->
+                            <!--android:gravity="center_horizontal|center_vertical">-->
+                            <!--<ImageView-->
+                                <!--android:layout_width="100dp"-->
+                                <!--android:layout_height="100dp"-->
+                                <!--android:src="@drawable/emptyshirts"/>-->
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="20sp"-->
+                                <!--android:textStyle="bold"-->
+                                <!--android:text="세탁 준비중 입니다."/>-->
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textSize="20sp"-->
+                                <!--android:text="세탁 시 자동 실행됩니다."/>-->
+                        <!--</LinearLayout>-->
+
+                        <!--<RelativeLayout-->
+                            <!--android:id="@+id/laundryStartRelative"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:visibility="invisible">-->
+                            <!--<ImageView-->
+                                <!--android:id="@+id/washerOnImage"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:src="@drawable/washer01"/>-->
+                            <!--<TextView-->
+                                <!--android:id="@+id/washerOnTv"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_centerInParent="true"-->
+                                <!--android:textSize="20sp"-->
+                                <!--android:text="세탁 중" />-->
+                        <!--</RelativeLayout>-->
+
+                    <!--</LinearLayout>-->
+
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/tab3"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:background="#FFFFFF"-->
+                        <!--android:orientation="vertical">-->
+
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="설정"/>-->
+
+                    <!--</LinearLayout>-->
+                <!--</FrameLayout>-->
+            <!--</LinearLayout>-->
+        <!--</TabHost>-->
 
 
     </LinearLayout>

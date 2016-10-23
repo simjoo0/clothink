@@ -1,30 +1,50 @@
 package clothing.plus.think.clothink;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 
-import com.tsengvn.typekit.Typekit;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends Activity implements TabHost.OnTabChangeListener {
+public class MainActivity extends Activity implements View.OnClickListener{
+
+    Fragment fr1;
+    Fragment fr2;
+    Fragment fr3;
 
     ExpandableListView expandableListView;
-    TabHost tabHost;
-    ImageView iv;
+
+    ImageButton closetBtn;
+    ImageButton washerBtn;
+    ImageButton settingBtn;
+
+    ImageView weatherIconImage;
 
     int threadStopFlag=1;
     int n=0;
+
+    static int washerCount=0;
+
     String str1="흰옷은 흰옷끼리";
     String str2="검은옷은 검은옷끼리";
     String str3="빨간옷은 빨간옷끼리";
@@ -33,49 +53,37 @@ public class MainActivity extends Activity implements TabHost.OnTabChangeListene
     private ArrayList<String> arrayGroup=new ArrayList<String>();;
     private HashMap<String, ArrayList<String>> arrayChild=new HashMap<String, ArrayList<String>>();
 
-    int menu_off[]={
-            R.drawable.closettab,
-            R.drawable.laundrytab,
-            R.drawable.settingtab
-    };
-    int menu_on[]={
-            R.drawable.closettabfocus,
-            R.drawable.laundrytabfocus,
-            R.drawable.settingtabfocus
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         expandableListView=(ExpandableListView) findViewById(R.id.expandableListView1);
+        weatherIconImage=(ImageView) findViewById(R.id.weatherIconImage);
 
-        tabHost=(TabHost) findViewById(R.id.tabhost);
+        closetBtn=(ImageButton) findViewById(R.id.closetBtn);
+        washerBtn=(ImageButton) findViewById(R.id.washerBtn);
+        settingBtn=(ImageButton) findViewById(R.id.settingBtn);
 
-        tabHost.setup();
 
-        TabHost.TabSpec spec1=tabHost.newTabSpec("Tab1").setContent(R.id.tab1).setIndicator("");
-        TabHost.TabSpec spec2=tabHost.newTabSpec("Tab2").setContent(R.id.tab2).setIndicator("");
-        TabHost.TabSpec spec3=tabHost.newTabSpec("Tab3").setContent(R.id.tab3).setIndicator("");
-        tabHost.addTab(spec1);
-        tabHost.addTab(spec2);
-        tabHost.addTab(spec3);
 
-        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++){
-            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#FFFFFF"));
-            iv=(ImageView)tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.icon);
-            iv.setImageDrawable(getResources().getDrawable(menu_off[i]));
-        }
 
-        tabHost.getTabWidget().setCurrentTab(0);
-        tabHost.getTabWidget().getChildAt(0).setBackgroundColor(Color.parseColor("#FFCD12"));
-        iv=(ImageView)tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).findViewById(android.R.id.icon);
-        iv.setImageDrawable(getResources().getDrawable(menu_on[tabHost.getCurrentTab()]));
-        tabHost.setOnTabChangedListener(this);
+        fr1=new ClosetActivity();
+        fr2=new WasherActivity();
+        fr3=new SettingActivity();
+
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentLayout, fr1);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         threadStopFlag=0;
-        new Thread(threadRun).start();
+        new Thread(tipThreadRun).start();
+
+        closetBtn.setOnClickListener(this);
+        washerBtn.setOnClickListener(this);
+        settingBtn.setOnClickListener(this);
 
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
@@ -95,10 +103,12 @@ public class MainActivity extends Activity implements TabHost.OnTabChangeListene
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 threadStopFlag=0;
 //                Log.i("차일드상태",""+threadStopFlag);
-                new Thread(threadRun).start();
+                new Thread(tipThreadRun).start();
                 return false;
             }
         });
+
+
     }
 
     @Override
@@ -106,21 +116,22 @@ public class MainActivity extends Activity implements TabHost.OnTabChangeListene
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
-    Handler handler=new Handler(){
+    Handler handler1=new Handler(){
         @Override
         public void handleMessage(Message msg) {
             updateThread();
         }
     };
 
-    Runnable threadRun=new Runnable(){
+
+    Runnable tipThreadRun=new Runnable(){
 
         public void run() {
             // TODO Auto-generated method stub
             while(threadStopFlag!=1){
                 try{
-                    handler.sendMessage(handler.obtainMessage());
-                    Thread.sleep(5000);
+                    handler1.sendMessage(handler1.obtainMessage());
+                    Thread.sleep(1500);
                 }catch(Throwable t){}
 
                 runOnUiThread(new Runnable() {
@@ -132,11 +143,43 @@ public class MainActivity extends Activity implements TabHost.OnTabChangeListene
                             setArrayData();
                             expandableListView.setAdapter(new ListViewAdapter(getApplicationContext(), arrayGroup, arrayChild));
                         }
+
+
+//                        if(washerOnFlag!=0){
+//                            laundryWaitLinear.setVisibility(View.GONE);
+//                            laundryStartRelative.setVisibility(View.VISIBLE);
+//
+//                            if(washerImageCount==0){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer01));
+//                                washerOnTv.setTextColor(Color.parseColor("#BCBEC0"));
+//                            }else if(washerImageCount==1){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer02));
+//                            }else if(washerImageCount==2){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer03));
+//                            }else if(washerImageCount==3){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer04));
+//                            }else if(washerImageCount==4){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer05));
+//                            }else if(washerImageCount==5){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer06));
+//                                washerOnTv.setTextColor(Color.parseColor("#FFFFFF"));
+//                            }else if(washerImageCount==6){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer07));
+//                            }else if(washerImageCount==7){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer08));
+//                            }else if(washerImageCount==8){
+//                                washerOnImage.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washer09));
+//                            }
+//                        }else{
+//                            laundryStartRelative.setVisibility(View.GONE);
+//                            laundryWaitLinear.setVisibility(View.VISIBLE);
+//                        }
                     }
                 });
             }
         }
     };
+
 
     private void setArrayData(){
 //        String tipData="str"+n;   // 저렇게 입력하면 str1의 값을 갖고올 수 있을 줄 알았는데 그냥 문자열 str1 이 들어가서 출력됨 ㅜㅜ
@@ -179,17 +222,54 @@ public class MainActivity extends Activity implements TabHost.OnTabChangeListene
     }
 
     @Override
-    public void onTabChanged(String tabId) {
-        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++){
-            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.parseColor("#FFFFFF"));
-            iv=(ImageView)tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.icon);
-            iv.setImageDrawable(getResources().getDrawable(menu_off[i]));
+    public void onClick(View v) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
 
+        switch (v.getId()){
+            case R.id.closetBtn:
+                closetBtn.setBackgroundResource(R.color.clothinkMainColor);
+                closetBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.closetbtnfocus));
 
+                washerBtn.setBackgroundResource(R.color.clothinkWhite);
+                washerBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washerbtn));
+
+                settingBtn.setBackgroundResource(R.color.clothinkWhite);
+                settingBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.settingbtn));
+
+                fragmentTransaction.replace(R.id.fragmentLayout, fr1);
+//                fr=new ClosetActivity();
+                break;
+            case R.id.washerBtn:
+                washerBtn.setBackgroundResource(R.color.clothinkMainColor);
+                washerBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washerbtnfocus));
+
+                closetBtn.setBackgroundResource(R.color.clothinkWhite);
+                closetBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.closetbtn));
+
+                settingBtn.setBackgroundResource(R.color.clothinkWhite);
+                settingBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.settingbtn));
+
+                fragmentTransaction.replace(R.id.fragmentLayout, fr2);
+                washerCount++;
+//                fr=new WasherActivity();
+                break;
+            case R.id.settingBtn:
+                settingBtn.setBackgroundResource(R.color.clothinkMainColor);
+                settingBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.settingbtnfocus));
+
+                closetBtn.setBackgroundResource(R.color.clothinkWhite);
+                closetBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.closetbtn));
+
+                washerBtn.setBackgroundResource(R.color.clothinkWhite);
+                washerBtn.setImageDrawable((BitmapDrawable) getResources().getDrawable(R.drawable.washerbtn));
+
+                fragmentTransaction.replace(R.id.fragmentLayout, fr3);
+
+//                fr=new SettingActivity();
+                break;
         }
-
-        tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundColor(Color.parseColor("#FFCD12"));
-        iv=(ImageView)tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).findViewById(android.R.id.icon);
-        iv.setImageDrawable(getResources().getDrawable(menu_on[tabHost.getCurrentTab()]));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
